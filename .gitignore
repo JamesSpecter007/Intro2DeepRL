@@ -1,0 +1,14 @@
+# --- Ignore the Virtual Environment ---
+i2drl/
+
+# --- Ignore Python Cache & Build files ---
+__pycache__/
+*.pyc
+*.pyd
+
+# --- Ignore VS Code Settings (Optional) ---
+.vscode/
+
+# --- Ignore Large/Binary Files (Optional) ---
+# It looks like you have zip files you might not want to track
+*.zip
