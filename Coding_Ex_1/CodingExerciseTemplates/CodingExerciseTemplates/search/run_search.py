@@ -14,7 +14,7 @@ class Agent():
         stack = util.Stack()
         # TODO get the start state of the environment and push it on the stack
         start_state = self.env.get_start_state()
-        stack
+        stack.push(start_state)
         # TODO initialize a ClosedList called closed_list
         closed_list = util.ClosedList()
         while stack.get_number_of_entries() > 0:
@@ -24,7 +24,7 @@ class Agent():
             # TODO if the closed_list does not contain state s already
             if closed_list.contains(s) is False:
                 # TODO add state s to the closed_list
-                closed_list.contains(s)
+                closed_list.add(s)
                 # TODO for every child_tuple in the list of successors from s
                 for child_tuple in self.env.get_successors(s):
                     # TODO extract the child, action, reward from the variable child_tuple
@@ -40,14 +40,49 @@ class Agent():
                     print("Add node {} to stack".format(child))
 
     # implementHere
-    def breadth_first_search(self):
+    def breadth_first_search(self): #FIFO
         # TODO implement breadth first search algorithm
+        queue = util.Queue()
+        start_state = self.env.get_start_state()
+        queue.enqueue(start_state)
+        closed_list = util.ClosedList()
+        while queue.get_number_of_entries() > 0:
+            s = queue.dequeue()
+            # Expand node
+            if closed_list.contains(s) is False:
+                print("Expand node {}".format(s))
+                closed_list.add(s)
+                for child_tuple in self.env.get_successors(s):
+                    child, action, reward = child_tuple
+                    self.graph.add(child=child, parent=s)
+                    if self.env.is_goal(child):
+                        return self.graph.get_actual_solution(child)
+                    queue.enqueue(child)
+                    print("Add node {} to queue".format(child))
 
 
     # implementHere
     def uniform_cost_search(self):
         # TODO implement uniform cost search algorithm
-
+        queue = util.Priority_Queue()
+        start_state = self.env.get_start_state()
+        queue.insert(state=start_state, cost=0, graph=self.graph)
+        closed_list = util.ClosedList()
+        while queue.get_number_of_entries() > 0:
+            s = queue.pop()
+            print("Expand node {}".format(s))
+            if self.env.is_goal(s):
+                return self.graph.get_actual_solution(s)
+            closed_list.add(s)
+            for child_tuple in self.env.get_successors(s):
+                child, action, cost = child_tuple
+                self.graph.add(child=child, parent=s, cost=cost)
+                if not queue.contains(child) and not closed_list.contains(child):
+                    queue.insert(state=child, cost=cost, parent=s, graph=self.graph)
+                    print("Add node {} to priority queue".format(child))
+                elif queue.contains(child) and queue.get_actual_cost(child) > self.graph.get_actual_cost(s) + cost:
+                    queue.insert(state=child, cost=cost, parent=s, graph=self.graph)
+                    print("Replace node {} in priority queue".format(child))
 
 
     def run_search_algorithm(self, algorithm):
@@ -64,7 +99,6 @@ class Agent():
             raise Exception("Wrong algorithm determined")
 
         return solution
-
 
 
 # Press the green button in the gutter to run the script.
