@@ -12,3 +12,5 @@ __pycache__/
 # --- Ignore Large/Binary Files (Optional) ---
 # It looks like you have zip files you might not want to track
 *.zip
+
+*.pdf
